@@ -3,19 +3,13 @@ import 'package:flutter/material.dart';
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  static const Color primaryColor = Color(0xFF00796B);
-
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'EMSI Connect',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        backgroundColor: primaryColor,
-        foregroundColor: Colors.white,
+        title: const Text('EMSI Connect'),
         actions: [
           IconButton(
             tooltip: 'Notifications',
@@ -35,106 +29,103 @@ class HomePage extends StatelessWidget {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 100),
           child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 650),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 20, 16, 100),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.asset(
-                        'assets/images/campus.jpg',
-                        height: 160,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            height: 160,
-                            color: Colors.blue.shade50,
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.all(16),
-                            child: const Text(
-                              'Image introuvable : campus.jpg',
-                              textAlign: TextAlign.center,
-                            ),
-                          );
-                        },
-                      ),
+              constraints: const BoxConstraints(maxWidth: 900),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      'assets/images/campus.jpg',
+                      height: 160,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: 160,
+                          color: colors.primaryContainer,
+                          alignment: Alignment.center,
+                          child: const Text(
+                            'Image campus.jpg introuvable',
+                          ),
+                        );
+                      },
                     ),
-                    const SizedBox(height: 24),
-                    const Text(
-                      'Bienvenue sur EMSI Connect',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF004D40),
-                      ),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Bienvenue sur EMSI Connect',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineSmall
+                        ?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: colors.primary,
+                        ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Votre campus, toujours à portée de main.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      color: colors.primary,
                     ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Votre campus, toujours à portée de main.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontStyle: FontStyle.italic,
-                        color: primaryColor,
-                      ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Votre espace universitaire pour accéder à vos cours, '
+                    'votre planning et vos informations personnelles.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      height: 1.6,
                     ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Votre espace universitaire pour accéder à vos cours, '
-                      'votre planning et vos informations personnelles.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        height: 1.6,
-                        color: Color(0xFF647067),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: _buildRubrique(
+                  ),
+                  const SizedBox(height: 24),
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final columns =
+                          constraints.maxWidth < 600 ? 2 : 3;
+
+                      return GridView.count(
+                        crossAxisCount: columns,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        mainAxisExtent: 140,
+                        shrinkWrap: true,
+                        physics:
+                            const NeverScrollableScrollPhysics(),
+                        children: [
+                          _buildRubrique(
+                            context,
                             icon: Icons.menu_book,
                             label: 'Mes cours',
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: _buildRubrique(
+                          _buildRubrique(
+                            context,
                             icon: Icons.calendar_month,
                             label: 'Planning',
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: _buildRubrique(
+                          _buildRubrique(
+                            context,
                             icon: Icons.person,
                             label: 'Mon profil',
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: _buildRubrique(
+                          _buildRubrique(
+                            context,
                             icon: Icons.task_alt,
                             label: 'Mes tâches',
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                        ],
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
           ),
@@ -142,8 +133,6 @@ class HomePage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         tooltip: 'Ajouter',
-        backgroundColor: primaryColor,
-        foregroundColor: Colors.white,
         onPressed: () {
           debugPrint('Fonctionnalité bientôt disponible');
         },
@@ -152,35 +141,36 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildRubrique({
+  Widget _buildRubrique(
+    BuildContext context, {
     required IconData icon,
     required String label,
   }) {
+    final colors = Theme.of(context).colorScheme;
+
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.blue.shade50,
+        color: colors.primaryContainer,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Colors.blue.shade100,
-        ),
+        border: Border.all(color: colors.outlineVariant),
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             icon,
-            size: 36,
-            color: Colors.blue.shade700,
+            size: 34,
+            color: colors.onPrimaryContainer,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
           Text(
             label,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF263238),
+              color: colors.onPrimaryContainer,
             ),
           ),
         ],
